@@ -4,18 +4,17 @@ import Image from "next/image";
 import styles from "../styles/Home.module.scss";
 
 export default function Home() {
-  const [openPopup, setOpenPopup] = useState(false);
   const [requestCode, setRequestCode] = useState("");
   const [departureDate, setDepartureDate] = useState("");
   const [numberOfDays, setNumberOfDays] = useState(1);
   const [numberOfParticipants, setNumberOfParticipants] = useState(1);
   const [pricePerPerson, setPricePerPerson] = useState(1.0);
-  const [result, setResult] = useState(0);
   const [message, setMessage] = useState("");
+  const [result, setResult] = useState(0);
 
-  function getRandomInt(max) {
+  const getRandomInt = (max) => {
     return Math.floor(Math.random() * max);
-  }
+  };
 
   useMemo(() => {
     const code = "A" + getRandomInt(2000);
@@ -27,12 +26,20 @@ export default function Home() {
     setResult(result);
   }, [numberOfDays, numberOfParticipants, pricePerPerson]);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const request = `https://popupserver2077.herokuapp.com/email/send/${requestCode}/${departureDate}/${numberOfDays}/${numberOfParticipants}/${pricePerPerson}/${message}`;
+    fetch(request)
+      .then(() => alert("Email sent!"))
+      .catch((error) => alert(error));
+  };
+
   return (
     <div className={styles.container}>
       <div>
         <h2>BOOKING OFFER FOR</h2>
         <div>
-          <form>
+          <form onSubmit={handleSubmit}>
             <label className={styles.label}>Request Code: </label>
             <span />
             {requestCode}
